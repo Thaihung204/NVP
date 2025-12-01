@@ -83,6 +83,18 @@
   </style>
 </head>
 <body>
+  <div id="loadingScreen" style="
+  position:fixed; inset:0; background:rgba(0,0,0,0.15);
+  backdrop-filter: blur(2px);
+  display:none; align-items:center; justify-content:center;
+  z-index:9999; 
+">
+  <div style="padding:18px 26px; background:white; border-radius:14px;
+    font-size:20px; font-weight:600; color:#ff4d6d; box-shadow:0 6px 20px rgba(0,0,0,0.15)">
+    Abe đợi một tí ạ ...
+  </div>
+</div>
+
   <!-- Password Screen -->
 <div id="pwdScreen" style="
   position:fixed; inset:0; background:linear-gradient(135deg,#ffafbd,#ffc3a0);
@@ -251,6 +263,14 @@
     const input = document.getElementById('pwdInput').value;
     const err = document.getElementById('pwdError');
     if (input === PASS) {
+      // Loading 10s
+      window.addEventListener('load', ()=>{
+        setTimeout(()=>{
+          const ld = document.getElementById('loading');
+          ld.style.opacity = 0;
+          setTimeout(()=> ld.remove(), 600);
+        }, 70000); // 10s
+      });
       document.getElementById('pwdScreen').style.opacity = 0;
       setTimeout(()=> document.getElementById('pwdScreen').remove(), 600);
     } else {
@@ -398,24 +418,25 @@
     const originalShowMessage = showMessage;
 
     // Override random button behavior with loading 10s
-    document.getElementById('btnRandom').addEventListener('click', async (e)=>{
-      e.stopImmediatePropagation(); // prevent double firing
-      loadingMsg.style.display = 'flex';
-      loadingMsg.style.opacity = 1;
+    document.getElementById('btnRandom').addEventListener('click', ()=>{
+      const loading = document.getElementById('loadingScreen');
+      loading.style.display = "flex";    // hiện loading
 
-      await new Promise(r => setTimeout(r, 1)); // 10s loading
+      setTimeout(() => {
+        if(pool.length === 0){
+          pool = [...messages];
+        }
+        const idx = Math.floor(Math.random()*pool.length);
+        const pick = pool.splice(idx,1)[0];
 
-      loadingMsg.style.opacity = 0;
-      setTimeout(()=> loadingMsg.style.display = 'none', 500);
 
-      // execute original logic
-      if(pool.length === 0) pool = [...messages];
-      const idx = Math.floor(Math.random()*pool.length);
-      const pick = pool.splice(idx,1)[0];
-      originalShowMessage(pick);
-      updateCounter();
-      launchConfetti();
-    }, true);
+        loading.style.display = "none"; 
+        showMessage(pick);
+        updateCounter();
+        launchConfetti(); // tắt loading
+      }, 2000);
+    });
+
   </script>
 
 </body>
