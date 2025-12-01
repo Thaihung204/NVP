@@ -83,6 +83,28 @@
   </style>
 </head>
 <body>
+  <!-- Password Screen -->
+<div id="pwdScreen" style="
+  position:fixed; inset:0; background:linear-gradient(135deg,#ffafbd,#ffc3a0);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index:99999; font-family:'Inter'; text-align:center; padding:20px;
+">
+  <h2 style="color:#fff; font-size:32px; margin-bottom:20px;">
+    Em có điều muốn gửi cho anh 💗<br>Nhập mật khẩu đi ạ:
+  </h2>
+  <input id="pwdInput" type="password" placeholder="Mật khẩu của anh..."
+    style="padding:14px 18px; border:none; border-radius:14px; font-size:18px; width:260px; text-align:center;">
+  <button onclick="checkPwd()" style="
+    margin-top:20px; padding:12px 20px; border:none; border-radius:14px;
+    background:#ff4d6d; color:white; font-weight:700; font-size:18px;
+    cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  ">Mở quà 💝</button>
+
+  <div id="pwdError" style="color:#fff; margin-top:14px; font-size:16px; display:none;">
+    Sai rồi nè anh 😳 thử lại đi.
+  </div>
+</div>
+
   <div class="hearts" id="hearts"></div>
 
   <div class="card" role="main">
@@ -94,8 +116,8 @@
 
     <div class="content">
       <div class="preview" id="preview">
-        <div class="message" id="message">Nhấn nút "Nhận lời chúc" để nhận một câu chúc bất ngờ nhé, em yêu 💌</div>
-        <div class="from" id="from">— Người tặng</div>
+        <div class="message" id="message">Nhấn nút "Nhận lời chúc" để nhận một câu chúc bất ngờ nhé, anh yêu 💌</div>
+        <div class="from" id="from">Embe của anh ❤️</div>
       </div>
 
       <div class="controls">
@@ -104,7 +126,7 @@
           Nhận lời chúc
         </button>
 
-        <button class="btn secondary" id="btnReset">Xem lại tất cả</button>
+        <!-- <button class="btn secondary" id="btnReset">Xem lại tất cả</button> -->
 
         <!-- <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
           <input id="nameInput" placeholder="Gõ tên người nhận (ví dụ: em yêu)" style="padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);min-width:180px" />
@@ -113,7 +135,7 @@
       </div>
       
       <div class="meta">
-        <div>Thiết kế: Embe của anh ❤️</div>
+        <!-- <div>Thiết kế: Embe của anh ❤️</div> -->
         <!-- <div id="counter">Còn lại: <span id="leftCount">0</span> lời.</div> -->
       </div>
     </div>
@@ -122,17 +144,119 @@
   <script>
     // ====== Messages array (tùy chỉnh ở đây) ======
     const messages = [
-      'Chúc em một ngày tràn ngập nụ cười và những điều ngọt ngào nhất.',
-      'Mỗi khoảnh khắc bên em là một bản tình ca anh không muốn kết thúc.',
-      'Yêu em không phải là lựa chọn, mà là điều anh luôn biết chắc.',
-      'Cuộc sống này vì em mà đẹp hơn rất nhiều. Cảm ơn em đã xuất hiện.',
-      'Mong em luôn khỏe, luôn cười và luôn bên anh.',
-      'Em là lý do anh tin vào phép màu mỗi ngày.',
-      'Dù con đường có gập ghềnh, anh sẽ luôn nắm tay em đi tiếp.',
-      'Một cái ôm từ xa gửi tới em — ấm áp, an toàn và trọn vẹn.',
-      'Anh thích em — thích cách em cười, thích cả những điều nhỏ bé của em.',
-      'Ngày hôm nay sẽ thật đẹp, vì có em trong suy nghĩ của anh.'
-    ];
+    "Anh ơi, chúc anh lúc nào cũng vui như lúc nói chuyện với em.",
+    "Hôm nay nhất định phải là một ngày nhẹ nhàng với anh nha.",
+    "Có anh trong đời làm trái tim em bình yên hơn rất nhiều.",
+    "Dù cả thế giới quay lưng, em vẫn chọn đứng cạnh anh.",
+    "Chúc anh luôn tỏa sáng theo cách riêng của mình.",
+    "Anh là nguồn cảm hứng để em cố gắng mỗi ngày, sự thật đóa :)).",
+    "Em mong mọi điều tốt đẹp nhất đều tìm đến anh.",
+    "Anh ơi, nhớ uống nước và chăm sóc bản thân nhaaaa.",
+    "Ngày mai dù thế nào, em vẫn ở đây ủng hộ anh.",
+    "Anh mạnh mẽ, nhưng không cần phải mạnh mẽ một mình đâu. (vì có e ở đây mòoo)",
+    "Cảm ơn anh vì đã để em bước vào cuộc sống của anh.",
+    "Anh nói em nếu anh cần một cái ôm thật chặt",
+    "Nếu anh mệt, cứ để em ôm anh một cái cho đỡ mệt.",
+    "Chúc anh luôn thành công với những điều anh đang theo đuổi.",
+    "Anh xứng đáng với những điều tốt đẹp nhất.",
+    "Trái tim em rất ngoan, nó chỉ hướng về mình anh thôi ọe.",
+    "Chúc anh hôm nay gặp nhiều niềm vui bất ngờ.",
+    "Anh là lý do khiến ngày của em bận… nghĩ về anh.",
+    "Ước gì giây phút này em đang được cạnh anh :((( ).",
+    "Cả ngày em chỉ muốn chạy đến ôm anh một cái thiệt là lâu.",
+    "Mong anh luôn mạnh khỏe lâu thiệt lâu.",
+    "Anh đừng thức khuya nữa, em thương lắm.",
+    "Em tin anh nhiều hơn anh nghĩ.",
+    "Chúc anh luôn có những người tốt xung quanh.",
+    "Anh là chỗ dựa tinh thần mà em luôn hướng đến.",
+    "Chúc anh làm việc gì cũng thuận lợi.",
+    "Mong hôm nay mang đến cho anh nhiều điều vui.",
+    "Và cũng là người em nghĩ đến cuối cùng trước khi ngủ.",
+    "Anh ơi, đừng buồn lâu, em ở đây mà.",
+    "Em mong anh lúc nào cũng bình an.",
+    "Chúc anh luôn giữ được trái tim ấm áp của mình.",
+    "Chúc anh hôm nay gặp toàn chuyện dễ thương.",
+    "Em muốn thấy tương lai mà trong đó có anh.",
+    "Anh là khoảng trời nhỏ mà em luôn hướng tới.",
+    "Chúc anh luôn vững vàng trước mọi chuyện.",
+    "Em tin anh sẽ làm được tất cả những gì anh mơ ước.",
+    "Cảm ơn anh đã xuất hiện đúng lúc em cần. (đặc biệt là lúc e say)",
+    "Mong anh sẽ luôn tìm được điều anh muốn.",
+    "Anh xứng đáng được yêu thương nhiều hơn.",
+    "Chúc anh luôn vui vẻ như cách anh làm em vui.",
+    "Trên đời này, anh đặc biệt theo cách rất riêng :3",
+    "Chúc anh lúc nào cũng tràn đầy năng lượng tốt.",
+    "Anh là sự ấm áp mà em luôn muốn dựa vào.",
+    "Hôm nay trời đẹp, nhưng không đẹp bằng anh hẹ hẹ.",
+    "Chúc anh gặp nhiều điều dễ thương như chính anh.",
+    "Nếu anh thấy mệt, hãy nghĩ đến em một chút.",
+    "Em luôn muốn đem điều tốt đến cho anh.",
+    "Mỗi thành công của anh đều là niềm vui của em.",
+    "Chúc anh luôn kiên định với con đường của mình.",
+    "Anh ơi, nhớ ăn uống đầy đủ nha.",
+    "Mong anh không bao giờ cảm thấy cô đơn.",
+    "Em luôn đứng phía sau để đỡ anh nếu anh ngã, nhưng mà a nặng quá thì em không chắc.",
+    "Ngày nào cũng nên là ngày tốt lành của anh.",
+    "Chúc anh luôn gặp người tốt và chuyện tốt.",
+    "Em thích nhìn anh cố gắng vì ước mơ.",
+    "Anh làm em tin vào những điều đẹp đẽ.",
+    "Chúc anh không lo, không buồn và không stress.",
+    "Anh không hoàn hảo, nhưng đối với em là đủ.",
+    "Em biết anh rất mạnh mẽ, nhưng vẫn muốn được che chở anh.",
+    "Chúc anh lúc nào cũng rạng rỡ.",
+    "Em muốn anh luôn hạnh phúc—kể cả những lúc không có em.",
+    "Anh là điều đặc biệt mà em chẳng tìm được lần hai.",
+    "Chúc anh được yêu thương đúng như những gì anh cho đi.",
+    "Anh là nơi bình yên nhất của em.",
+    "Chúc anh luôn giữ nụ cười xấu trai đó.",
+    "Chúc anh có thật nhiều cơ hội tốt.",
+    "Cảm ơn anh vì đã tử tế với em.",
+    "Anh là điều ngọt ngào nhất mà em từng có.",
+    "Chúc anh luôn có những người hiểu và trân trọng anh.",
+    "Em ước gì lúc nào cũng được cạnh anh.",
+    "Anh là phần đẹp nhất trong cuộc sống của em.",
+    "Chúc anh được bình an từ tâm, an nhiên trong lòng.",
+    "Và cuối cùng… chúc anh biết rằng em thương anh nhiều lắm.",
+      "Hôm nay là ngày 14/9. Em sẽ viết cho anh đến ngày sinh nhật của anh ❤",
+    "Anh toàn đi làm chả quan tâm em, dỗi vãi.",
+    "Gọi anh là con cu, vì anh là của quý của em :3",
+    "Nhiều khi thương anh vl nhưng ngại nói ra. Mong anh biết, anh không biết thì thui.",
+    "Nhân viên mới, nhân viên mới, nhân viên mới. Cái gì em ghét nhắc lại 3 lần.",
+    "Chúc anh tuổi mới luôn hạnh phúc (với ai cũng được).",
+    "Chúc anh tuổi mới gặp người có thể mở lòng tâm sự để không phải một mình đối mặt với tất cả.",
+    "Phải luôn nhớ rằng anh không cô đơn, em đây mà.",
+    "Em biết anh đã cố gắng, nỗ lực rất nhiều rồi. Em thương anh lắm.",
+    "Em không biết nên viết những điều này ra giấy hay làm cái web cho anh dễ xem trên điện thoại.",
+    "Khi nào anh buồn hay có gì vui, hy vọng anh nhớ đến em để tâm sự.",
+    "Ê cái này thú vị thặc, em có nhiều điều không nói được nên em sẽ viết nhé.",
+    "Bây giờ em chuẩn bị quà trước nhưng mà không biết đến sinh nhật anh em có dịp tặng không :((",
+    "Bữa nay em bực em bỏ anh vô hạn chế đó, hy vọng anh không biết :( khi nào hết dỗi em bỏ ra lại :))",
+    "Chúc anh sức khoẻ tràn đầy, sống lâu trăm tuổi.",
+    "Chúc anh không làm bạn thân với tay phải.",
+    "Chúc anh sung mãn như lần đầu em gặp anh 🤡",
+    "Chúc anh mỗi ngày thức dậy đều cảm thấy vui.",
+    "Nếu mà áp lực hay mệt mỏi quá thì ôm em nè.",
+    "Đừng thân mật quá, em ghen đó 😒",
+    "Cự Giải vui vẻ, nói chuyện linh hoạt với mọi người nhưng chỉ mở lòng tâm sự với người họ cho là quan trọng.",
+    "Từ nay về sau nếu có được ngủ chung với nhau thì anh nhớ ôm em cả đêm với cho em gác nhaaa.",
+    "Em không muốn anh hư đâu.",
+    "Nhiều khi muốn nắc mà nhắn tin anh không trả lời :))",
+    "Chúc anh chân cứng đá mềm, đặc biệt là chân giữa 😆",
+    "Chúc anh trong túi có tiền, trong tim có tình iuuu.",
+    "Cái áo em phải canh cả tháng mới mua được đó ạ, hy vọng anh thích nó -.-"
+  ];
+
+  const PASS = "0612";
+  function checkPwd() {
+    const input = document.getElementById('pwdInput').value;
+    const err = document.getElementById('pwdError');
+    if (input === PASS) {
+      document.getElementById('pwdScreen').style.opacity = 0;
+      setTimeout(()=> document.getElementById('pwdScreen').remove(), 600);
+    } else {
+      err.style.display = "block";
+    }
+  }
 
     // Copy and manage unused pool so we don't repeat until all shown
     let pool = [...messages];
